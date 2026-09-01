@@ -1,0 +1,30 @@
+name: Calibre
+
+on:
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  calibre-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Calibre and Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y calibre xvfb python curl
+
+      - name: Download input
+        run: |
+          curl --location "https://h.uguu.se/kqenyqbq.prc" --output curl.prc
+
+      - name: Execute Calibre Commands
+        run: |
+          # xvfb-run provides the virtual display server Calibre requires
+          xvfb-run ebook-convert curl.prc out.epub
+
+      - name: Upload output
+        run: |
+          curl -i -F files[]=@out.epub https://uguu.se/upload?output=text
