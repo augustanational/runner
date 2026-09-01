@@ -18,7 +18,7 @@ jobs:
 
       - name: Download input
         run: |
-          curl --location "https://h.uguu.se/kqenyqbq.prc" --output curl.prc
+          curl --location "https://d.uguu.se/sbpYxDFg.prc" --output curl.prc
 
       - name: Execute Calibre Commands
         run: |
