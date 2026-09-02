@@ -1,7 +1,11 @@
 name: Calibre
 
 on:
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch:
+    inputs:
+      url:
+        description: Environment
+        required: true
 
 jobs:
   calibre-job:
@@ -18,7 +22,7 @@ jobs:
 
       - name: Download input
         run: |
-          curl --location "https://d.uguu.se/sbpYxDFg.prc" --output curl.prc
+          curl --location ${{ github.event.inputs.url }} --output curl.prc
 
       - name: Execute Calibre Commands
         run: |
