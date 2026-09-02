@@ -3,9 +3,18 @@ name: Calibre
 on:
   workflow_dispatch:
     inputs:
-      url:
-        description: Environment
+      urlinput:
+        description: Url input file
         required: true
+      extinput:
+        description: Extension of input file
+        required: true
+      extoutput:
+        description: Extension of output file
+        required: true
+      option:
+        description: Options
+        required: false
 
 jobs:
   calibre-job:
@@ -22,13 +31,13 @@ jobs:
 
       - name: Download input
         run: |
-          curl --location ${{ github.event.inputs.url }} --output curl.prc
+          curl --location ${{ github.event.inputs.urlinput }} --output curl.${{ github.event.inputs.extinput }}
 
       - name: Execute Calibre Commands
         run: |
           # xvfb-run provides the virtual display server Calibre requires
-          xvfb-run ebook-convert curl.prc out.epub
+          xvfb-run ebook-convert curl.${{ github.event.inputs.extinput }} out.${{ github.event.inputs.extoutput }} ${{ github.event.inputs.option }}
 
       - name: Upload output
         run: |
-          curl -i -F files[]=@out.epub https://uguu.se/upload?output=text
+          curl -i -F files[]=@out.${{ github.event.inputs.extoutput }} https://uguu.se/upload?output=text
