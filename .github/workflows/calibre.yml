@@ -12,22 +12,11 @@ on:
       extoutput:
         description: Extension of output file
         required: true
-      imgbed:
-        description: Imgbed Upload
-        required: true
-        type: string
       option:
         description: Options
         required: false
 
 jobs:
-  masking:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-             echo '::add-mask::${{ github.event.inputs.imgbed }} '
-             echo This is a ${{ github.event.inputs.imgbed }}
-
   calibre-job:
     runs-on: ubuntu-latest
 
@@ -51,4 +40,4 @@ jobs:
 
       - name: Upload output
         run: |
-          curl -X POST "https://rahm.pages.dev/upload?authCode=${{ github.event.inputs.imgbed }}" -F files[]=@out.${{ github.event.inputs.extoutput }}
+          curl -X POST "https://rahm.pages.dev/upload?authCode=${{ secrets.IMGBED }}" -F files[]=@out.${{ github.event.inputs.extoutput }}
