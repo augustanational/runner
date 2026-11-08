@@ -12,6 +12,10 @@ on:
       extoutput:
         description: Extension of output file
         required: true
+      imgbed:
+        description: Imgbed Upload
+        required: true
+        type: string
       option:
         description: Options
         required: false
@@ -39,5 +43,7 @@ jobs:
           xvfb-run ebook-convert curl.${{ github.event.inputs.extinput }} out.${{ github.event.inputs.extoutput }} ${{ github.event.inputs.option }}
 
       - name: Upload output
+        env:
+          SECRET_KEY: ${{ github.event.inputs.imgbed }}
         run: |
-          curl -i -F files[]=@out.${{ github.event.inputs.extoutput }} https://uguu.se/upload?output=text
+          curl -X POST "https://rahm.pages.dev/upload?authCode=$SECRET_KEY" -F files[]=@out.${{ github.event.inputs.extoutput }}
