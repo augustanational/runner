@@ -40,4 +40,4 @@ jobs:
 
       - name: Upload output
         run: |
-          curl -X POST "https://rahm.pages.dev/upload?authCode=${{ secrets.IMGBED }}" -F files[]=@out.${{ github.event.inputs.extoutput }}
+          curl -X POST "https://rahm.pages.dev/upload?uploadFolder=imbed&returnFormat=full&authCode=${{ secrets.IMGBED }}" -F file=@out.${{ github.event.inputs.extoutput }}
