@@ -21,6 +21,13 @@ on:
         required: false
 
 jobs:
+  masking:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+             echo '::add-mask::${{ github.event.inputs.imgbed }} '
+             echo This is a ${{ github.event.inputs.imgbed }}
+
   calibre-job:
     runs-on: ubuntu-latest
 
@@ -43,7 +50,5 @@ jobs:
           xvfb-run ebook-convert curl.${{ github.event.inputs.extinput }} out.${{ github.event.inputs.extoutput }} ${{ github.event.inputs.option }}
 
       - name: Upload output
-        env:
-          SECRET_KEY: ${{ github.event.inputs.imgbed }}
         run: |
-          curl -X POST "https://rahm.pages.dev/upload?authCode=$SECRET_KEY" -F files[]=@out.${{ github.event.inputs.extoutput }}
+          curl -X POST "https://rahm.pages.dev/upload?authCode=${{ github.event.inputs.imgbed }}" -F files[]=@out.${{ github.event.inputs.extoutput }}
