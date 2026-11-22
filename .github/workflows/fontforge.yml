@@ -6,8 +6,15 @@ on:
       urlinput:
         description: Url input file
         required: true
-      scale:
-        description: Scale (1.25)
+      file:
+        description: Python file
+        required: true
+        type: choice
+        options:
+          - adjust_metrics.py
+          - scale_font.py
+      number:
+        description: Number
         required: true
 
 env:
@@ -42,7 +49,7 @@ jobs:
 
       - name: Patch font
         run: |
-          ./$FONT_FORGE -script $PWD/scale_font.py $PWD/input.ttf $PWD/output.ttf ${{ github.event.inputs.scale }}
+          ./$FONT_FORGE -script $PWD/${{ github.event.inputs.file } $PWD/input.ttf $PWD/output.ttf ${{ github.event.inputs.number }}
 
       - name: Uploadoutput font
         uses: actions/upload-artifact@v4
