@@ -19,10 +19,6 @@ font.os2_typodescent -= shift
 font.os2_winascent += shift
 font.os2_windescent += shift  # Lưu ý: giá trị winDescent luôn là số dương
 
-
-    # 4. Round coordinates to integers (best practice for TrueType .ttf fonts)
-    font.round()
-
     # 5. Export the scaled font
     font.generate(output_path)
     font.close()
