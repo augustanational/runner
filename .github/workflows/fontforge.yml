@@ -6,6 +6,9 @@ on:
       urlinput:
         description: Url input file
         required: true
+      scale:
+        description: Scale (1.25)
+        required: true
 
 env:
   FONT_FORGE_URL: https://github.com/fontforge/fontforge/releases/download/20230101/FontForge-2023-01-01-a1dad3e-x86_64.AppImage
@@ -39,11 +42,10 @@ jobs:
 
       - name: Patch font
         run: |
-          ./$FONT_FORGE -script scale_font.py input.ttf output.ttf 1.25
-          ./$FONT_FORGE -script $PWD/font-patcher $PWD/$FONT_FILE -out $PWD/patched-font --complete
+          ./$FONT_FORGE -script scale_font.py input.ttf output.ttf ${{ github.event.inputs.scale }}
 
-      - name: Upload patched font
+      - name: Uploadoutput font
         uses: actions/upload-artifact@v3
         with:
-          name: patched-font
-          path: ./patched-font
+          name: output-font
+          path: ./output.ttf
