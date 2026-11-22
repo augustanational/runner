@@ -1,0 +1,49 @@
+name: fontforge
+
+on:
+  workflow_dispatch:
+    inputs:
+      urlinput:
+        description: Url input file
+        required: true
+
+env:
+  FONT_FORGE_URL: https://github.com/fontforge/fontforge/releases/download/20230101/FontForge-2023-01-01-a1dad3e-x86_64.AppImage
+  FONT_FORGE: FontForge.AppImage
+
+jobs:
+  patch-font:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install FontForge
+        run: |
+          wget $FONT_FORGE_URL -O $FONT_FORGE
+          chmod u+x $FONT_FORGE
+
+      - name: Install FUSE (required to run AppImage)
+        run: |
+          sudo add-apt-repository universe
+          sudo apt install libfuse2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3
+
+      - name: Download input
+        run: |
+          curl --location ${{ github.event.inputs.urlinput }} --output input.ttf
+
+      - name: Patch font
+        run: |
+          ./$FONT_FORGE -script scale_font.py input.ttf output.ttf 1.25
+          ./$FONT_FORGE -script $PWD/font-patcher $PWD/$FONT_FILE -out $PWD/patched-font --complete
+
+      - name: Upload patched font
+        uses: actions/upload-artifact@v3
+        with:
+          name: patched-font
+          path: ./patched-font
