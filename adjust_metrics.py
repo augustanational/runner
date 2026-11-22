@@ -14,8 +14,8 @@ font.selection.all()
 font.transform(psMat.translate(0, shift_y))
 
 # (Tùy chọn) Cập nhật lại thông số Ascent và Descent nếu cần
-# font.ascent += shift_y
-# font.descent -= shift_y
+font.ascent += shift_y
+font.descent -= shift_y
 
 # Xuất ra file mới
 font.generate(output_font)
