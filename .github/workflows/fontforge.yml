@@ -42,7 +42,7 @@ jobs:
 
       - name: Patch font
         run: |
-          ./$FONT_FORGE -script ./scale_font.py ./input.ttf ./output.ttf ${{ github.event.inputs.scale }}
+          ./$FONT_FORGE -script $PWD/scale_font.py $PWD/input.ttf $PWD/output.ttf ${{ github.event.inputs.scale }}
 
       - name: Uploadoutput font
         uses: actions/upload-artifact@v4
