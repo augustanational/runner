@@ -36,8 +36,8 @@ if __name__ == "__main__":
         print("Usage: fontforge -script scale_font.py <input.ttf> <output.ttf> <scale_factor>")
         sys.exit(1)
 
-    in_file = sys.argv
-    out_file = sys.argv
-    factor = float(sys.argv)
+    in_file = sys.argv[1]
+    out_file = sys.argv[2]
+    factor = float(sys.argv[3])
 
     scale_font(in_file, out_file, factor)
