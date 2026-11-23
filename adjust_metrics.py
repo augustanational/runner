@@ -15,18 +15,19 @@ def shift_font(input_path, output_path, dy):
 
     for glyph in font.selection.byGlyphs:
         if not glyph.references:
-            # glyph.transform() automatically moves BOTH contours and anchorPoints!
+            # glyph.transform() automatically moves BOTH contours and anchorPoints
             glyph.transform(matrix)
         elif glyph.anchorPoints:
-            # For composite glyphs (with references), transform() is skipped to avoid
-            # double-shifting contours, so we shift their anchors individually:
+            # For composite glyphs (with references), shift their anchors individually
             old_anchors = glyph.anchorPoints
-            glyph.anchorPoints = ()  # Clear existing anchors first
+            glyph.anchorPoints = ()
             for ap in old_anchors:
-                # ap = (anchor_class_name, type, x, y[, ligature_index])
-                name, ap_type, x, y = ap, ap, ap, ap
+                name = ap[0]
+                ap_type = ap[1]
+                x = ap[2]
+                y = ap[3]
                 if len(ap) == 5:
-                    glyph.addAnchorPoint(name, ap_type, x, y + dy, ap)
+                    glyph.addAnchorPoint(name, ap_type, x, y + dy, ap[4])
                 else:
                     glyph.addAnchorPoint(name, ap_type, x, y + dy)
 
