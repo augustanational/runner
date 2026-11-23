@@ -14,23 +14,23 @@ def shift_font(input_path, output_path, dy):
     font.selection.all()
 
     for glyph in font.selection.byGlyphs:
-        # 1. Shift anchor points (mark-to-base, mark-to-mark, etc.)
-        # Anchors belong to individual glyphs and do not inherit reference shifts,
-        # so we shift them on ALL glyphs.
-        if glyph.anchorPoints:
-            new_anchors = []
-            for ap in glyph.anchorPoints:
-                # Tuple format: (anchor_class_name, type, x, y[, ligature_index])
-                ap_list = list(ap)
-                ap_list[3] += dy
-                new_anchors.append(tuple(ap_list))
-            glyph.anchorPoints = tuple(new_anchors)
-
-        # 2. Shift glyph outlines (skip pure references to avoid double-shifting)
         if not glyph.references:
+            # glyph.transform() automatically moves BOTH contours and anchorPoints!
             glyph.transform(matrix)
+        elif glyph.anchorPoints:
+            # For composite glyphs (with references), transform() is skipped to avoid
+            # double-shifting contours, so we shift their anchors individually:
+            old_anchors = glyph.anchorPoints
+            glyph.anchorPoints = ()  # Clear existing anchors first
+            for ap in old_anchors:
+                # ap = (anchor_class_name, type, x, y[, ligature_index])
+                name, ap_type, x, y = ap, ap, ap, ap
+                if len(ap) == 5:
+                    glyph.addAnchorPoint(name, ap_type, x, y + dy, ap)
+                else:
+                    glyph.addAnchorPoint(name, ap_type, x, y + dy)
 
-    # 3. Shift vertical metrics to keep total em-size and line-height identical
+    # Shift vertical metrics to keep total em-size and line-height identical
     font.ascent += dy
     font.descent -= dy
     font.hhea_ascent += dy
@@ -40,7 +40,6 @@ def shift_font(input_path, output_path, dy):
     font.os2_winascent += dy
     font.os2_windescent -= dy
 
-    # 4. Generate the updated font
     font.generate(output_path)
     font.close()
     print(f"Success: Shifted glyphs, anchors, and metrics by {dy} units -> '{output_path}'")
